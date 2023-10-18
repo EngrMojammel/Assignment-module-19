@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  firstName String @db.VarChar(100)
+  middleName String @db.VarChar(100)
+  lastName String @db.VarChar(100)
+  mobile String @db.VarChar(100)
+  email String @db.VarChar(100)
+  password String @db.VarChar(100)
+  admin Int @db.TinyInt
+  registererAt DateTime @default(now()) @db.Timestamp(0)
+  lastLogin DateTime @default(now()) @db.Timestamp(0)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  order order []
+  cart cart?
+  product product[]
+}
+
+model order{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  title String @db.VarChar(100)
+  token String @db.VarChar(100)
+  subTotal Int 
+  itemDiscount Int
+  tax Int
+  total Int
+  discount Int
+  grandTotal Int
+  firstName String @db.VarChar(100)
+  middleName String @db.VarChar(100)
+  lastName String @db.VarChar(100)
+  mobile String @db.VarChar(100)
+  email String @db.VarChar(100)
+  city String @db.VarChar(100)
+  country String @db.VarChar(100)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  userId BigInt @db.UnsignedBigInt 
+  user user @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+}
+
+model cart{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+  
+  title String @db.VarChar(100)
+  sessionId String @db.VarChar(100)
+  token String @db.VarChar(100)
+  status String @db.VarChar(100)
+  firstName String @db.VarChar(100)
+  middleName String @db.VarChar(100)
+  lastName String @db.VarChar(100)
+  mobile String @db.VarChar(100)
+  email String @db.VarChar(100)
+  city String @db.VarChar(100)
+  country String @db.VarChar(100)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  userId BigInt @db.UnsignedBigInt  @unique 
+  user user @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model product{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  firstName String @db.VarChar(100)
+  metaTitle String @db.VarChar(100)
+  slug String @db.VarChar(100)
+  summary String @db.VarChar(100)
+  price Int
+  discount Int
+  publishedAt DateTime @default(now()) @db.Timestamp(0)
+  startsAt DateTime @default(now()) @db.Timestamp(0)
+  endsAt DateTime @default(now()) @db.Timestamp(0)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  userId BigInt @db.UnsignedBigInt 
+  user user @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  
+  product_meta product_meta []
+  product_review product_review []
+
+}
+
+model product_meta{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  key String @db.VarChar(100)
+  content String @db.VarChar(100)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  productId BigInt @db.UnsignedBigInt 
+  product product @relation(fields: [productId],references: [id],onDelete: Restrict,onUpdate: Cascade)
+
+}
+
+model product_review{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  title String @db.VarChar(100)
+  rating String @db.VarChar(100)
+  content String @db.VarChar(100)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+
+  productId BigInt @db.UnsignedBigInt 
+  product product @relation(fields: [productId],references: [id],onDelete: Restrict,onUpdate: Cascade)
+}
+
+
+model category{
+  id BigInt @id @db.UnsignedBigInt @default(autoincrement())
+
+  title String @db.VarChar(100)
+  metaTitle String @db.VarChar(100)
+  slug String @db.VarChar(100)
+  content String @db.VarChar(100)
+  creatAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @db.Timestamp(0)
+}
